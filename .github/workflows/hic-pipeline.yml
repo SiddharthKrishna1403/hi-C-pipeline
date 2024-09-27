@@ -50,5 +50,6 @@ jobs:
 
     - name: Cleanup
       if: always()
-      run: docker-compose downname: Hi-C Data Analysis Pipeline
+      run: docker-compose down
+
 
