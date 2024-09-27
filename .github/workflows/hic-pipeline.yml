@@ -41,7 +41,7 @@ jobs:
       env:
         NODE_VERSION: '20'
       run: |
-      	docker-compose up -d
+        docker-compose up -d
         docker-compose exec -T fastq_processor bash /scripts/01_preprocess.sh
         docker-compose exec -T aligner bash /scripts/02_align.sh
         docker-compose exec -T sam_processor bash /scripts/03_filter_pairs.sh
