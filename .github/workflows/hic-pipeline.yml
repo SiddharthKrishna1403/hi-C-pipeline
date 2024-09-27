@@ -30,13 +30,12 @@ jobs:
 
     - name: Download test dataset
       run: |
-
-    	mkdir -p data
-    	wget -O data/GM12878_HiC_R1.fastq.gz https://www.encodeproject.org/files/ENCFF796DGP/@@download/ENCFF796DGP.fastq.gz
-    	wget -O data/GM12878_HiC_R2.fastq.gz https://www.encodeproject.org/files/ENCFF776DZT/@@download/ENCFF776DZT.fastq.gz
+        mkdir -p data
+        wget -O data/GM12878_HiC_R1.fastq.gz https://www.encodeproject.org/files/ENCFF796DGP/@@download/ENCFF796DGP.fastq.gz
+        wget -O data/GM12878_HiC_R2.fastq.gz https://www.encodeproject.org/files/ENCFF776DZT/@@download/ENCFF776DZT.fastq.gz
     	# Download a subset of the reference genome (chr22 for example)
-    	wget -O data/hg38_chr22.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr22.fa.gz
-    	gunzip data/hg38_chr22.fa.gz
+        wget -O data/hg38_chr22.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr22.fa.gz
+        gunzip data/hg38_chr22.fa.gz
         
 
     - name: Run pipeline
