@@ -10,7 +10,7 @@ jobs:
   run_pipeline:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Docker Compose
       run: |
@@ -37,7 +37,7 @@ jobs:
         docker-compose exec -T visualizer python /scripts/09_visualization.py
 
     - name: Upload results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: hic-analysis-results
         path: results/
