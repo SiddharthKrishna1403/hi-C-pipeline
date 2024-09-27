@@ -38,7 +38,7 @@ services:
       - ./results:/results
 
   ml_environment:
-    image: jupyter/scipy-notebook:python-3.8
+    image: jupyter/scipy-notebook:python-3.10
     volumes:
       - ./data:/data
       - ./results:/results
@@ -51,3 +51,4 @@ services:
     volumes:
       - ./data:/data
       - ./results:/results
+
