@@ -20,7 +20,9 @@ services:
       - ./results:/results
 
   hic_processor:
-    image: quay.io/biocontainers/hic-pro:3.1.0--py310h4b81fae_3
+    build:
+      context: .
+      dockerfile: Dockerfile.hicpro
     volumes:
       - ./data:/data
       - ./results:/results
@@ -55,4 +57,3 @@ services:
     volumes:
       - ./data:/data
       - ./results:/results
-
