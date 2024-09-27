@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   fastq_processor:
-    image: biocontainers/fastp:0.20.1
+    image: quay.io/biocontainers/fastp:0.23.4--h5f740d0_0
     volumes:
       - ./data:/data
       - ./results:/results
