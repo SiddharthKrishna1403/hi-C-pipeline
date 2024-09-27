@@ -50,7 +50,11 @@ jobs:
         docker-compose exec -T visualizer python /scripts/09_visualization.py
 
     - name: Upload results
+<<<<<<< HEAD
       uses: actions/upload-artifact@v4
+=======
+      uses: actions/upload-artifact@v3
+>>>>>>> main
       with:
         name: hic-analysis-results
         path: results/
@@ -59,3 +63,7 @@ jobs:
       if: always()
       run: docker-compose down
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
