@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  fastq_processor:
+    image: biocontainers/fastp:0.20.1
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  aligner:
+    image: biocontainers/bwa:0.7.17
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  sam_processor:
+    image: biocontainers/samtools:1.9
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  hic_processor:
+    image: aylab/hic-pro:3.1.0
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  peak_caller:
+    image: biocontainers/macs2:2.2.7.1
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  annotator:
+    image: biocontainers/bedtools:2.30.0
+    volumes:
+      - ./data:/data
+      - ./results:/results
+
+  ml_environment:
+    image: jupyter/scipy-notebook:python-3.8
+    volumes:
+      - ./data:/data
+      - ./results:/results
+      - ./scripts:/scripts
+    ports:
+      - "8888:8888"
+
+  visualizer:
+    image: biocontainers/pygenometracks:3.7
+    volumes:
+      - ./data:/data
+      - ./results:/results

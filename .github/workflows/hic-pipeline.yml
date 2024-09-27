@@ -1,0 +1,43 @@
+name: Hi-C Data Analysis Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Download test dataset
+      run: |
+        mkdir -p data
+        wget -O data/test_R1.fastq.gz https://example.com/test_R1.fastq.gz
+        wget -O data/test_R2.fastq.gz https://example.com/test_R2.fastq.gz
+
+    - name: Run pipeline
+      run: |
+        docker-compose up -d
+        docker-compose exec -T fastq_processor bash /scripts/01_preprocess.sh
+        docker-compose exec -T aligner bash /scripts/02_align.sh
+        docker-compose exec -T sam_processor bash /scripts/03_filter_pairs.sh
+        docker-compose exec -T hic_processor bash /scripts/04_hic_processing.sh
+        docker-compose exec -T peak_caller bash /scripts/05_peak_calling.sh
+        docker-compose exec -T annotator bash /scripts/06_annotation.sh
+        docker-compose exec -T ml_environment python /scripts/07_feature_extraction.py
+        docker-compose exec -T ml_environment python /scripts/08_model_training.py
+        docker-compose exec -T visualizer python /scripts/09_visualization.py
+
+    - name: Upload results
+      uses: actions/upload-artifact@v2
+      with:
+        name: hic-analysis-results
+        path: results/
