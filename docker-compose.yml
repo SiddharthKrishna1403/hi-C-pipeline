@@ -8,46 +8,50 @@ services:
       - ./results:/results
 
   aligner:
-    image: biocontainers/bwa:0.7.17
+    image: quay.io/biocontainers/bwa:0.7.17--hed695b0_7
     volumes:
       - ./data:/data
       - ./results:/results
 
   sam_processor:
-    image: biocontainers/samtools:1.9
+    image: quay.io/biocontainers/samtools:1.17--h00cdaf9_0
     volumes:
       - ./data:/data
       - ./results:/results
 
   hic_processor:
-    image: aylab/hic-pro:3.1.0
+    image: quay.io/biocontainers/hic-pro:3.1.0--py310h4b81fae_3
     volumes:
       - ./data:/data
       - ./results:/results
 
   peak_caller:
-    image: biocontainers/macs2:2.2.7.1
+    image: quay.io/biocontainers/macs2:2.2.9.1--py310h1425a21_0
     volumes:
       - ./data:/data
       - ./results:/results
 
   annotator:
-    image: biocontainers/bedtools:2.30.0
+    image: quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2
     volumes:
       - ./data:/data
       - ./results:/results
 
   ml_environment:
-    image: jupyter/scipy-notebook:python-3.10
+    build:
+      context: .
+      dockerfile: Dockerfile.ml
     volumes:
       - ./data:/data
       - ./results:/results
       - ./scripts:/scripts
     ports:
       - "8888:8888"
+    environment:
+      - NODE_VERSION=20
 
   visualizer:
-    image: biocontainers/pygenometracks:3.7
+    image: quay.io/biocontainers/pygenometracks:3.7--pyhdfd78af_0
     volumes:
       - ./data:/data
       - ./results:/results
