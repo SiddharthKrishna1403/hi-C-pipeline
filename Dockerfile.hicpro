@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 # Set environment variables to prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
-ENV PATH="/usr/local/bin:${PATH}"
+ENV PATH="/usr/local/bin:/usr/bin:${PATH}"
 
 RUN apt-get update && apt-get install -y \
     wget \
@@ -13,16 +13,22 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && pip3 install --upgrade pip \
-    && apt-get install -y r-base \
+    && apt-get install -y \
+    r-base \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
 
+# Verify Python installation
+RUN python --version && pip --version
+
 WORKDIR /opt
 
+# Modify HiC-Pro installation process
 RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
     && unzip v3.1.0.zip \
     && mv HiC-Pro-3.1.0 HiC-Pro \
     && cd HiC-Pro \
+    && sed -i 's/python -V/python3 -V/g' scripts/install/install_dependencies.sh \
     && make configure \
     && make install
 
