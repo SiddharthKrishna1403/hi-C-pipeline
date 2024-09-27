@@ -21,6 +21,8 @@ RUN apt-get update && apt-get install -y \
 # Verify Python installation
 RUN python --version && pip --version
 
+RUN pip3 install numpy scipy matplotlib pysam bx-python
+
 WORKDIR /opt
 
 # Modify HiC-Pro installation process
