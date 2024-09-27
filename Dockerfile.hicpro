@@ -11,21 +11,28 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3 \
     python3-pip \
-    && ln -s /usr/bin/python3 /usr/bin/python \
-    && pip3 install --upgrade pip \
-    && apt-get install -y \
     r-base \
     tzdata \
+    sudo \
+    && ln -s /usr/bin/python3 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+RUN useradd -m -s /bin/bash hicpro
+RUN echo "hicpro ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Switch to the non-root user
+USER hicpro
+WORKDIR /home/hicpro
+
+# Install Python dependencies
+RUN pip3 install --user --upgrade pip && \
+    pip3 install --user numpy scipy matplotlib pysam bx-python
 
 # Verify Python installation
 RUN python --version && pip --version
 
-RUN pip3 install numpy scipy matplotlib pysam bx-python
-
-WORKDIR /opt
-
-# Modify HiC-Pro installation process
+# Install HiC-Pro
 RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
     && unzip v3.1.0.zip \
     && mv HiC-Pro-3.1.0 HiC-Pro \
@@ -34,7 +41,8 @@ RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
     && make configure \
     && make install
 
-ENV PATH="/opt/HiC-Pro/bin:${PATH}"
+# Add the local bin directory to PATH
+ENV PATH="/home/hicpro/.local/bin:/home/hicpro/HiC-Pro/bin:${PATH}"
 
 WORKDIR /data
 
