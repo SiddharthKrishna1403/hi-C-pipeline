@@ -40,26 +40,7 @@ RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir "setuptools<60.0" wheel
 
 # Install Python packages
-RUN pip install --no-cache-dir --only-binary=:all: numpy==1.21.6 scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13 iced==0.5.10
-
-
-# Create and activate virtual environment
-RUN python3 -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Upgrade pip and install older setuptools
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir "setuptools<60.0"
-
-# Install numpy separately
-RUN pip install --no-cache-dir numpy==1.21.6
-
-# Install other Python dependencies
-RUN pip install --no-cache-dir scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13
-
-# Install iced separately, specifying an older version if needed
-RUN pip install --no-cache-dir iced
-
+RUN pip install --no-cache-dir --only-binary=:all: numpy==1.21.6 scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13 iced
 
 # Set environment variables
 ENV HICPRO_PATH="/home/hicpro/HiC-Pro"
