@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
+# Install required Python libraries
+RUN pip3 install numpy scipy matplotlib pysam bx-python iced
 RUN useradd -m -s /bin/bash hicpro
 RUN echo "hicpro ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
@@ -37,7 +39,6 @@ ENV PATH="${HICPRO_PATH}/bin:${PATH}"
 
 WORKDIR /home/hicpro/HiC-Pro
 
-# Let HiC-Pro handle its own dependencies
 RUN make configure && make install
 
 WORKDIR /data
