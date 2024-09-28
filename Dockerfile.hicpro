@@ -1,6 +1,5 @@
 FROM ubuntu:20.04
 
-# Set environment variables to prevent interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 ENV PATH="/usr/local/bin:/usr/bin:${PATH}"
@@ -17,33 +16,16 @@ RUN apt-get update && apt-get install -y \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
 RUN useradd -m -s /bin/bash hicpro
 RUN echo "hicpro ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# Switch to the non-root user
 USER hicpro
 WORKDIR /home/hicpro
 
-# Install Python dependencies
-RUN pip3 install --user --upgrade pip && \
-    pip3 install --user numpy scipy matplotlib pysam bx-python
-
-# Verify Python installation
-RUN python --version && pip --version
-
-# Install HiC-Pro
 RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
     && unzip v3.1.0.zip \
-    && mv HiC-Pro-3.1.0 HiC-Pro \
-    && cd HiC-Pro \
-    && sed -i 's/python -V/python3 -V/g' scripts/install/install_dependencies.sh \
-    && make configure \
-    && make install
+    && mv HiC-Pro-3.1.0 HiC-Pro
 
-# Add the local bin directory to PATH
-ENV PATH="/home/hicpro/.local/bin:/home/hicpro/HiC-Pro/bin:${PATH}"
+WORKDIR /home/hicpro/HiC-Pro
 
-WORKDIR /data
-
-CMD ["HiC-Pro", "-h"]
+CMD ["/bin/bash"]
