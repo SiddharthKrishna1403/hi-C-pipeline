@@ -16,7 +16,6 @@ RUN apt-get update && apt-get install -y \
     samtools \
     tzdata \
     && rm -rf /var/lib/apt/lists/*
-
 # Create hicpro user
 RUN useradd -m -s /bin/bash hicpro
 
@@ -32,9 +31,13 @@ RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
+
+RUN pip install --no-cache-dir "setuptools<60.0" 
+
 # Install Python dependencies in the virtual environment
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir numpy==1.21.6 scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13 iced==0.5.10
+
 
 # Set environment variables
 ENV HICPRO_PATH="/home/hicpro/HiC-Pro"
