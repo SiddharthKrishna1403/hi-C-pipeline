@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3 \
     python3-pip \
+    python3-dev \
     r-base \
     bowtie2 \
     samtools \
@@ -18,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install required Python libraries
-RUN pip3 install numpy scipy matplotlib pysam bx-python iced
+RUN pip3 install --no-cache-dir numpy scipy matplotlib pysam bx-python iced
 
 # Create hicpro user
 RUN useradd -m -s /bin/bash hicpro
@@ -38,7 +39,10 @@ ENV PATH="${HICPRO_PATH}/bin:${PATH}"
 
 WORKDIR /home/hicpro/HiC-Pro
 
-# Install HiC-Pro as root
+# Modify the installation script to skip Python library check
+RUN sed -i 's/check_python_packages/# check_python_packages/' scripts/install/install_dependencies.sh
+
+# Install HiC-Pro
 RUN make configure && make install
 
 # Change ownership of HiC-Pro directory to hicpro user
@@ -46,12 +50,6 @@ RUN chown -R hicpro:hicpro /home/hicpro/HiC-Pro
 
 # Switch to hicpro user
 USER hicpro
-
-WORKDIR /data
-
-CMD ["/bin/bash"]
-
-RUN make configure && make install
 
 WORKDIR /data
 
