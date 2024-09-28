@@ -14,16 +14,15 @@ RUN apt-get update && apt-get install -y \
     bowtie2 \
     samtools \
     tzdata \
-    sudo \
     && ln -s /usr/bin/python3 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
 # Install required Python libraries
 RUN pip3 install numpy scipy matplotlib pysam bx-python iced
-RUN useradd -m -s /bin/bash hicpro
-RUN echo "hicpro ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-USER hicpro
+# Create hicpro user
+RUN useradd -m -s /bin/bash hicpro
+
 WORKDIR /home/hicpro
 
 RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
@@ -38,6 +37,19 @@ ENV SAMTOOLS_PATH="/usr/bin/samtools"
 ENV PATH="${HICPRO_PATH}/bin:${PATH}"
 
 WORKDIR /home/hicpro/HiC-Pro
+
+# Install HiC-Pro as root
+RUN make configure && make install
+
+# Change ownership of HiC-Pro directory to hicpro user
+RUN chown -R hicpro:hicpro /home/hicpro/HiC-Pro
+
+# Switch to hicpro user
+USER hicpro
+
+WORKDIR /data
+
+CMD ["/bin/bash"]
 
 RUN make configure && make install
 
