@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3 \
     python3-pip \
+    python3-numpy
     python3-venv \
     r-base \
     bowtie2 \
@@ -33,9 +34,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Upgrade pip and install setuptools and wheel
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Install numpy
-RUN pip install --no-cache-dir numpy==1.21.6
 
 # Install other Python dependencies
 RUN pip install --no-cache-dir scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13 iced==0.5.10
