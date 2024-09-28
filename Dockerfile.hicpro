@@ -31,16 +31,14 @@ RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
 RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade pip and install older setuptools
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir "setuptools<60.0"
+# Upgrade pip and install setuptools and wheel
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install numpy separately with --no-use-pep517
-RUN pip install --no-cache-dir --no-use-pep517 numpy==1.21.6
+# Install numpy
+RUN pip install --no-cache-dir numpy==1.21.6
 
 # Install other Python dependencies
 RUN pip install --no-cache-dir scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13 iced==0.5.10
-
 
 # Set environment variables
 ENV HICPRO_PATH="/home/hicpro/HiC-Pro"
