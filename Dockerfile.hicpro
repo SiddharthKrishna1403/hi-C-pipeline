@@ -1,32 +1,33 @@
 FROM ubuntu:20.04
 
+# Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     wget \
-    unzip \
+    git \
     build-essential \
     python3 \
     python3-pip \
-    python3-numpy \
-    python3-venv \
     r-base \
     bowtie2 \
     samtools \
-    tzdata \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-# Create hicpro user
-RUN useradd -m -s /bin/bash hicpro
 
-WORKDIR /home/hicpro
+# Install HiC-Pro
+RUN wget https://github.com/nservant/HiC-Pro/archive/refs/tags/v3.1.0.tar.gz \
+    && tar -zxvf v3.1.0.tar.gz \
+    && cd HiC-Pro-3.1.0 \
+    && make configure \
+    && make install \
+    && make all
 
-# Download and extract HiC-Pro
-RUN wget https://github.com/nservant/HiC-Pro/archive/v3.1.0.zip \
-    && unzip v3.1.0.zip \
-    && mv HiC-Pro-3.1.0 HiC-Pro \
-    && rm v3.1.0.zip
+# Set environment variables
+ENV PATH="/opt/HiC-Pro-3.1.0/bin:${PATH}"
+
+
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y build-essential python3-dev
@@ -39,9 +40,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir "setuptools<60.0" wheel
 
-# Install Python packages
-RUN pip install --no-cache-dir --only-binary=:all: numpy==1.21.6 scipy==1.7.3 matplotlib==3.5.3 pysam==0.19.1 bx-python==0.8.13
-RUN pip install --no-cache-dir --upgrade iced
+
 
 # Install Python packages
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
@@ -56,22 +55,8 @@ ENV PATH="/opt/venv/bin:${HICPRO_PATH}/bin:${PATH}"
 
 WORKDIR /home/hicpro/HiC-Pro
 
-# Modify the installation script to skip Python library check
-RUN sed -i 's/check_python_packages/# check_python_packages/' scripts/install/install_dependencies.sh
-
-# Set PYTHONPATH to include the virtual environment site-packages
-ENV PYTHONPATH="/opt/venv/lib/python3.8/site-packages:$PYTHONPATH"
-
-# Install HiC-Pro
-RUN bash -c "source /opt/venv/bin/activate && make configure && make install"
-
-
-# Change ownership of HiC-Pro directory to hicpro user
-RUN chown -R hicpro:hicpro /home/hicpro/HiC-Pro /opt/venv
-
-# Switch to hicpro user
-USER hicpro
-
+# Set working directory
 WORKDIR /data
 
-CMD ["/bin/bash"]
+# Default command
+CMD ["HiC-Pro", "-h"]
