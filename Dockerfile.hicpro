@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install required Python libraries
-RUN sudo pip3 install numpy scipy matplotlib pysam bx-python iced
+RUN pip3 install numpy scipy matplotlib pysam bx-python iced
 RUN useradd -m -s /bin/bash hicpro
 RUN echo "hicpro ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
