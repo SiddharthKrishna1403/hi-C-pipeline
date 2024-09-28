@@ -5,59 +5,30 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
 jobs:
-  run_pipeline:
+  build-and-run:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Verify Node.js version
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t hicpro-image -f Dockerfile.hicpro .
+    
+    - name: Inspect HiC-Pro environment
       run: |
-        node --version
-        npm --version
-
-    - name: Set up Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
-
-    - name: Download test dataset
-      run: |
-        mkdir -p data
-        # wget -O data/GM12878_HiC_R1.fastq.gz https://www.encodeproject.org/files/ENCFF796DGP/@@download/ENCFF796DGP.fastq.gz
-        # wget -O data/GM12878_HiC_R2.fastq.gz https://www.encodeproject.org/files/ENCFF776DZT/@@download/ENCFF776DZT.fastq.gz
-        # wget -O data/hg38_chr22.fa.gz https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/chr22.fa.gz
-        # gunzip data/hg38_chr22.fa.gz
-        
-
-    - name: Run pipeline
-      env:
-        NODE_VERSION: '20'
-      run: |
-        docker-compose up -d
-        docker-compose exec -T fastq_processor bash /scripts/01_preprocess.sh
-        docker-compose exec -T aligner bash /scripts/02_align.sh
-        docker-compose exec -T sam_processor bash /scripts/03_filter_pairs.sh
-        docker-compose exec -T hic_processor bash /scripts/04_hic_processing.sh
-        docker-compose exec -T peak_caller bash /scripts/05_peak_calling.sh
-        docker-compose exec -T annotator bash /scripts/06_annotation.sh
-        docker-compose exec -T ml_environment python /scripts/07_feature_extraction.py
-        docker-compose exec -T ml_environment python /scripts/08_model_training.py
-        docker-compose exec -T visualizer python /scripts/09_visualization.py
-
-    - name: Upload results
-      uses: actions/upload-artifact@v4
-      with:
-        name: hic-analysis-results
-        path: results/
-
-    - name: Cleanup
-      if: always()
-      run: docker-compose down
+        docker run hicpro-image /bin/bash -c "
+          cd /home/hicpro/HiC-Pro && 
+          echo 'Checking installation script:' && 
+          cat scripts/install/install_dependencies.sh && 
+          echo 'Checking config file:' && 
+          cat config-install.txt && 
+          echo 'Checking Python imports:' && 
+          grep -R 'import ' . && 
+          echo 'Checking PATH references:' && 
+          grep -R 'PATH' . && 
+          echo 'Checking environment variables:' && 
+          grep -R 'os.environ' .
+        "
+    
+    - name: Run HiC-Pro
+      run: docker run hicpro-image HiC-Pro -h
