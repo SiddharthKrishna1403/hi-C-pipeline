@@ -50,8 +50,8 @@ jobs:
 
     - name: Run pipeline
       run: |
-        docker-compose up -d
-        docker-compose exec -T scripts/*.sh
+        docker compose up -d
+        docker compose exec -T scripts/*.sh
 
     - name: Update Docker cache
       run: |
