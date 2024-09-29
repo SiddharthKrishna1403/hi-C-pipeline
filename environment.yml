@@ -5,12 +5,14 @@ channels:
   - defaults
 dependencies:
   - python=3.8
-  - iced
-  - pysam
   - numpy
   - scipy
   - matplotlib
+  - pysam
   - bx-python
+  - iced
+  - cooler
+  - pandas
   - h5py
   - bowtie2
   - samtools
