@@ -3,6 +3,11 @@ FROM continuumio/miniconda3:latest
 # Set working directory
 WORKDIR /app
 
+# Set environment variables
+ENV HICPRO_PATH="/app/HiC-Pro-3.1.0"
+ENV PATH="/opt/conda/envs/hicpro_env/bin:${HICPRO_PATH}/bin:${PATH}"
+ENV PYTHONPATH="/opt/conda/envs/hicpro_env/lib/python3.8/site-packages:${PYTHONPATH}"
+
 # Copy environment.yml file
 COPY environment.yml .
 
@@ -27,7 +32,7 @@ RUN wget https://github.com/nservant/HiC-Pro/archive/refs/tags/v3.1.0.tar.gz \
     && cd HiC-Pro-3.1.0 \
     && make configure \
     && make install \
-    && make all
+    && make
 
 # Set environment variables
 ENV HICPRO_PATH="/app/HiC-Pro-3.1.0"
