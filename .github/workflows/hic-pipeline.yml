@@ -48,8 +48,10 @@ jobs:
           echo 'Environment variables:' && env | grep -E 'PYTHON|HICPRO|PATH'
         "
 
-    - name: Run HiC-Pro
-      run: docker run hicpro-image:latest HiC-Pro -h
+    - name: Run pipeline
+      run: |
+        docker-compose up -d
+        docker-compose exec -T scripts/*.sh
 
     - name: Update Docker cache
       run: |
