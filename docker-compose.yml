@@ -28,7 +28,7 @@ services:
       - CONDA_PREFIX=/opt/conda/envs/hicpro_env
       
   peak_caller:
-    image: quay.io/biocontainers/macs2:2.2.9.1--py310h1425a21_0
+    image: quay.io/biocontainers/macs3:3.0.1--py310h1af8fb7_3
     volumes:
       - ./data:/data
       - ./results:/results
