@@ -41,8 +41,8 @@ services:
 
   ml_environment:
     build:
-      context: .
-      dockerfile: Dockerfile.ml
+      context: jupyter/scipy-notebook:python-3.8
+      dockerfile: 
     volumes:
       - ./data:/data
       - ./results:/results
