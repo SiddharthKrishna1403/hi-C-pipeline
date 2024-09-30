@@ -33,7 +33,7 @@ jobs:
         docker pull quay.io/biocontainers/fastp:0.23.4--h5f740d0_0
         docker pull quay.io/biocontainers/bwa:0.7.17--hed695b0_7
         docker pull quay.io/biocontainers/samtools:1.17--h00cdaf9_0
-        quay.io/biocontainers/macs3:3.0.1--py310h1af8fb7_3
+        docker pull quay.io/biocontainers/macs3:3.0.1--py310h1af8fb7_3
         docker pull quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2
         docker pull quay.io/biocontainers/pygenometracks:3.7--pyhdfd78af_0
         
